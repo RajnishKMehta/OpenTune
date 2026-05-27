@@ -12,5 +12,4 @@ import androidx.compose.runtime.Immutable
 data class ItemMetadata(
     val isLiked: Boolean = false,
     val isInLibrary: Boolean = false,
-    val downloadState: Int? = null,
 )

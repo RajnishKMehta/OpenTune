@@ -800,12 +800,14 @@ fun AlbumListItem(
 
             LaunchedEffect(songs) {
                 if (songs.isEmpty()) return@LaunchedEffect
-                downloadUtil.downloads.collect { downloads ->
-                    downloadState = when {
-                        songs.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
-                        songs.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
+            combine(songs.map { downloadUtil.getDownload(it.id) }) { downloads ->
+                when {
+                    downloads.all { it?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                    downloads.any { it?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
                         else -> Download.STATE_STOPPED
                     }
+            }.collect { state ->
+                downloadState = state
                 }
             }
 
@@ -866,12 +868,14 @@ fun AlbumGridItem(
 
             LaunchedEffect(songs) {
                 if (songs.isEmpty()) return@LaunchedEffect
-                downloadUtil.downloads.collect { downloads ->
-                    downloadState = when {
-                        songs.all { downloads[it.id]?.state == STATE_COMPLETED } -> STATE_COMPLETED
-                        songs.all { downloads[it.id]?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING, STATE_COMPLETED) } -> STATE_DOWNLOADING
+            combine(songs.map { downloadUtil.getDownload(it.id) }) { downloads ->
+                when {
+                    downloads.all { it?.state == STATE_COMPLETED } -> STATE_COMPLETED
+                    downloads.any { it?.state in listOf(STATE_QUEUED, STATE_DOWNLOADING) } -> STATE_DOWNLOADING
                         else -> Download.STATE_STOPPED
                     }
+            }.collect { state ->
+                downloadState = state
                 }
             }
 

@@ -98,16 +98,14 @@ class HomeViewModel @Inject constructor(
     val allItemsMetadata = combine(
         database.allSongs(),
         database.allArtistsByPlayTime(),
-        database.playlists(PlaylistSortType.CREATE_DATE, true),
-        downloadUtil.downloads
-    ) { songs, artists, playlists, downloads ->
+        database.playlists(PlaylistSortType.CREATE_DATE, true)
+    ) { songs, artists, playlists ->
         val metadataMap = mutableMapOf<String, ItemMetadata>()
 
         songs.forEach { song ->
             metadataMap[song.id] = ItemMetadata(
                 isLiked = song.song.liked,
-                isInLibrary = song.song.inLibrary != null,
-                downloadState = downloads[song.id]?.state
+                isInLibrary = song.song.inLibrary != null
             )
         }
 
