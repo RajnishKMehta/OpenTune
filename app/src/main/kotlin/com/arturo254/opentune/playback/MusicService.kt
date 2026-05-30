@@ -10,6 +10,9 @@
 
 package com.arturo254.opentune.playback
 
+import com.arturo254.opentune.widget.NowPlayingWidgetProvider
+import android.appwidget.AppWidgetManager
+
 import android.app.PendingIntent
 import android.app.ActivityManager
 import android.content.ComponentName
@@ -1471,7 +1474,20 @@ class MusicService :
         player.pause()
     }
 
+
+    private fun updateWidget() {
+        val intent = Intent(this, NowPlayingWidgetProvider::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            val ids = AppWidgetManager.getInstance(applicationContext)
+                .getAppWidgetIds(ComponentName(applicationContext, NowPlayingWidgetProvider::class.java))
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        }
+        sendBroadcast(intent)
+    }
+
     private fun updateNotification() {
+        updateWidget()
+
         try {
             val customLayout = listOf(
                 CommandButton
