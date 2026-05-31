@@ -65,10 +65,15 @@ class ExoDownloadService : DownloadService(
         notMetRequirements: Int
     ): Notification {
         val notificationHelper = downloadUtil.downloadNotificationHelper
-        val firstDownload = downloads.firstOrNull()
+        val activeDownload = downloads.find { it.state == Download.STATE_DOWNLOADING } ?: downloads.firstOrNull()
 
-        val title = if (downloads.size == 1 && firstDownload != null) {
-            Util.fromUtf8Bytes(firstDownload.request.data)
+        val title = if (activeDownload != null) {
+            val songName = Util.fromUtf8Bytes(activeDownload.request.data)
+            if (downloads.size > 1) {
+                "$songName (+${downloads.size - 1})"
+            } else {
+                songName
+            }
         } else {
             resources.getQuantityString(R.plurals.n_song, downloads.size, downloads.size)
         }
@@ -83,6 +88,9 @@ class ExoDownloadService : DownloadService(
                 notMetRequirements
             )
         )
+
+        // Ensure the notification is ongoing even if paused
+        builder.setOngoing(true)
 
         // 1. Pause/Resume Button
         val isPaused = downloads.all { it.state == Download.STATE_QUEUED || it.state == Download.STATE_RESTARTING } || downloadManager.downloadsPaused
@@ -108,8 +116,8 @@ class ExoDownloadService : DownloadService(
             ).build()
         }
 
-        // 2. Cancel Button (Current/First)
-        val cancelAction = firstDownload?.let { download ->
+        // 2. Cancel Button (Current Active)
+        val cancelAction = activeDownload?.let { download ->
             Notification.Action.Builder(
                 Icon.createWithResource(this, R.drawable.close),
                 getString(R.string.action_cancel),

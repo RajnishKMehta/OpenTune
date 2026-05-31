@@ -8,12 +8,10 @@
 
 package com.arturo254.opentune.ui.screens.search
 
-
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,6 +24,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.Modifier
+import com.arturo254.opentune.R
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -40,7 +39,6 @@ import androidx.navigation.NavController
 import com.arturo254.opentune.innertube.models.*
 import com.arturo254.opentune.LocalDatabase
 import com.arturo254.opentune.LocalPlayerConnection
-import com.arturo254.opentune.R
 import com.arturo254.opentune.extensions.togglePlayPause
 import com.arturo254.opentune.models.toMediaMetadata
 import com.arturo254.opentune.playback.queues.YouTubeQueue
@@ -49,8 +47,6 @@ import com.arturo254.opentune.ui.component.YouTubeListItem
 import com.arturo254.opentune.ui.menu.*
 import com.arturo254.opentune.viewmodels.OnlineSearchSuggestionViewModel
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -233,17 +229,14 @@ fun OnlineSearchScreen(
                                         onDismiss()
                                     }
                                 }
-
                                 is AlbumItem -> {
                                     navController.navigate("album/${item.id}")
                                     onDismiss()
                                 }
-
                                 is ArtistItem -> {
                                     navController.navigate("artist/${item.id}")
                                     onDismiss()
                                 }
-
                                 is PlaylistItem -> {
                                     navController.navigate("online_playlist/${item.id}")
                                     onDismiss()
@@ -262,7 +255,6 @@ fun OnlineSearchScreen(
                                             onDismiss()
                                         }
                                     )
-
                                     is AlbumItem -> YouTubeAlbumMenu(
                                         albumItem = item,
                                         navController = navController,
@@ -271,7 +263,6 @@ fun OnlineSearchScreen(
                                             onDismiss()
                                         }
                                     )
-
                                     is ArtistItem -> YouTubeArtistMenu(
                                         artist = item,
                                         onDismiss = {
@@ -279,7 +270,6 @@ fun OnlineSearchScreen(
                                             onDismiss()
                                         }
                                     )
-
                                     is PlaylistItem -> YouTubePlaylistMenu(
                                         playlist = item,
                                         coroutineScope = coroutineScope,
@@ -324,7 +314,6 @@ fun SuggestionItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .focusable()
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 6.dp),
     ) {
